@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
+import { ReactComponent as CloseIcon } from '../Icons/close.svg';
 import Modal from './Modal/Modal';
+import IconButton from './IconButton/IconButton';
 
 class App extends Component {
   state = {
@@ -37,6 +39,9 @@ class App extends Component {
         <div>
           {showModal && (
             <Modal onClose={this.toggleModal}>
+              <IconButton onClick={this.toggleModal}>
+                <CloseIcon width="30" height="30" fill="red" />
+              </IconButton>
               Lorem ipsum dolor sit amet.
               <button type="button" onClick={this.toggleModal}>
                 Close modalWindow

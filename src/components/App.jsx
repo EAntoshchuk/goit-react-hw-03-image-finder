@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
-import { ReactComponent as CloseIcon } from '../Icons/close.svg';
+// import { ReactComponent as CloseIcon } from '../Icons/close.svg';
 import Modal from './Modal/Modal';
 import Button from './Button/Button';
+import ImageChanger from './ImageChanger/ImageChanger';
 
 class App extends Component {
   state = {
+    isImageLoaded: false,
     showModal: false,
   };
 
@@ -14,8 +16,18 @@ class App extends Component {
     }));
   };
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.url !== this.props.url) {
+      this.setState({ isImageLoaded: false });
+    }
+  }
+
   render() {
+    const { isImageLoaded } = this.state;
+    const { url } = this.props;
+    const showLoader = url && !isImageLoaded;
     const { showModal } = this.state;
+    const imageSize = isImageLoaded ? '100' : 0;
     return (
       <div
         style={{
@@ -28,7 +40,6 @@ class App extends Component {
         <div
           style={{
             height: '10vh',
-            // display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
             fontSize: 40,
@@ -44,11 +55,14 @@ class App extends Component {
         </div>
 
         <div>
+          {/* {showLoader && <h2>Loading Images</h2>} */}
           {showModal && (
             <Modal onClose={this.toggleModal}>
               <Button onClick={this.toggleModal}>
-                <CloseIcon width="30" height="30" fill="red" />
+                {/* <CloseIcon width="30" height="30" fill="red" /> */}
               </Button>
+              <ImageChanger />
+              {/* <ImageChanger items={img} /> */}
               Lorem ipsum dolor sit amet.
               <button type="button" onClick={this.toggleModal}>
                 Close modalWindow

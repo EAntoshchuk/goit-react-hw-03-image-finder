@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { ReactComponent as CloseIcon } from '../Icons/close.svg';
 import Modal from './Modal/Modal';
-import IconButton from './IconButton/IconButton';
+import Button from './Button/Button';
 
 class App extends Component {
   state = {
@@ -17,7 +17,14 @@ class App extends Component {
   render() {
     const { showModal } = this.state;
     return (
-      <div>
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr',
+          gridGap: '16px',
+          paddingBottom: '24px',
+        }}
+      >
         <div
           style={{
             height: '10vh',
@@ -39,9 +46,9 @@ class App extends Component {
         <div>
           {showModal && (
             <Modal onClose={this.toggleModal}>
-              <IconButton onClick={this.toggleModal}>
+              <Button onClick={this.toggleModal}>
                 <CloseIcon width="30" height="30" fill="red" />
-              </IconButton>
+              </Button>
               Lorem ipsum dolor sit amet.
               <button type="button" onClick={this.toggleModal}>
                 Close modalWindow

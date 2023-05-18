@@ -2,13 +2,26 @@ import React, { Component } from 'react';
 // import { ReactComponent as CloseIcon } from '../Icons/close.svg';
 import Modal from './Modal/Modal';
 import Button from './Button/Button';
-import ImageChanger from './ImageChanger/ImageChanger';
+// import ImageChanger from './ImageChanger/ImageChanger';
 
 class App extends Component {
   state = {
     isImageLoaded: false,
     showModal: false,
+    hits: [],
   };
+
+  async componentDidMount() {
+    this.setState({ isImageLoaded: true });
+
+    fetch(
+      'https://pixabay.com/api/?q=cat&page=1&key=35004383-5cd2ee797d433f0b9be31b1f4&image_type=photo&orientation=horizontal&per_page=12'
+    )
+      .then(response => response.json())
+      // .then(console.log)
+      .then(hits => this.setState({ hits }))
+      .finally(() => this.setState({ isImageLoaded: false }));
+  }
 
   toggleModal = () => {
     this.setState(({ showModal }) => ({
@@ -23,10 +36,9 @@ class App extends Component {
   }
 
   render() {
-    const { isImageLoaded } = this.state;
+    const { isImageLoaded, showModal, hits } = this.state;
     const { url } = this.props;
     const showLoader = url && !isImageLoaded;
-    const { showModal } = this.state;
     const imageSize = isImageLoaded ? '100' : 0;
     return (
       <div
@@ -55,15 +67,15 @@ class App extends Component {
         </div>
 
         <div>
-          {/* {showLoader && <h2>Loading Images</h2>} */}
+          {this.state.isImageLoaded && <h2>loading</h2>}
+          {this.state.hits && (
+            <div>
+              <img src={hits.webformatURL} alt="image" />
+            </div>
+          )}
           {showModal && (
             <Modal onClose={this.toggleModal}>
-              <Button onClick={this.toggleModal}>
-                {/* <CloseIcon width="30" height="30" fill="red" /> */}
-              </Button>
-              <ImageChanger />
-              {/* <ImageChanger items={img} /> */}
-              Lorem ipsum dolor sit amet.
+              <Button onClick={this.toggleModal}></Button>
               <button type="button" onClick={this.toggleModal}>
                 Close modalWindow
               </button>

@@ -1,4 +1,4 @@
-.SearchForm {
+.search_form {
   display: flex;
   align-items: center;
   width: 100%;
@@ -8,7 +8,7 @@
   overflow: hidden;
 }
 
-.SearchForm-button {
+.search_form__button {
   display: inline-block;
   width: 48px;
   height: 48px;
@@ -23,34 +23,34 @@
   outline: none;
 }
 
-.SearchForm-button:hover {
+.search_form__button:hover {
   opacity: 1;
 }
 
-.SearchForm-button-label {
-  position: absolute;
+.search_form__button_label {
+  /* position: absolute;
   width: 1px;
-  height: 1px;
+  height: 1px; */
   padding: 0;
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
-  clip-path: inset(50%);
+  /* clip-path: inset(50%); */
   border: 0;
 }
 
-.SearchForm-input {
+.search_form__input {
   display: inline-block;
   width: 100%;
   font: inherit;
   font-size: 20px;
-  border: none;
-  outline: none;
+  /* border: none;
+  outline: none; */
   padding-left: 4px;
   padding-right: 4px;
 }
 
-.SearchForm-input::placeholder {
+.search_form__input::placeholder {
   font: inherit;
   font-size: 18px;
 }

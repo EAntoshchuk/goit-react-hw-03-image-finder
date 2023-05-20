@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
+import { ToastContainer } from 'react-toastify';
 // import { ReactComponent as CloseIcon } from '../Icons/close.svg';
 import Modal from './Modal/Modal';
 import Button from './Button/Button';
+import SeachBar from './Searchbar/Searchbar';
 // import ImageChanger from './ImageChanger/ImageChanger';
 
 class App extends Component {
@@ -10,6 +12,12 @@ class App extends Component {
     showModal: false,
     hits: [],
   };
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.url !== this.props.url) {
+      this.setState({ isImageLoaded: false });
+    }
+  }
 
   async componentDidMount() {
     this.setState({ isImageLoaded: true });
@@ -29,12 +37,10 @@ class App extends Component {
     }));
   };
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.url !== this.props.url) {
-      this.setState({ isImageLoaded: false });
-    }
-  }
-
+  handleFormSubmit = hits => {
+    console.log(hits);
+    this.setState({ hits });
+  };
   render() {
     const { isImageLoaded, showModal, hits } = this.state;
     const { url } = this.props;
@@ -67,6 +73,8 @@ class App extends Component {
         </div>
 
         <div>
+          <ToastContainer autoClose={3000} theme="colored" />
+          <SeachBar onSubmit={this.handleFormSubmit} />
           {this.state.isImageLoaded && <h2>loading</h2>}
           {this.state.hits && (
             <div>

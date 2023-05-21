@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { ToastContainer } from 'react-toastify';
 // import { ReactComponent as CloseIcon } from '../Icons/close.svg';
+import ImageGalleryItem from './ImageGallery/ImageGalleryItem/ImageGalleryItem';
 import Modal from './Modal/Modal';
 import Button from './Button/Button';
 import SeachBar from './Searchbar/Searchbar';
@@ -75,10 +76,11 @@ class App extends Component {
         <div>
           <ToastContainer autoClose={3000} theme="colored" />
           <SeachBar onSubmit={this.handleFormSubmit} />
+          <ImageGalleryItem request={this.state.hits} />
           {this.state.isImageLoaded && <h2>loading</h2>}
           {this.state.hits && (
             <div>
-              <img src={hits.webformatURL} alt="image" />
+              <img src={hits['webformatURL']} alt="image" />
             </div>
           )}
           {showModal && (

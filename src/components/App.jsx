@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
-import { ToastContainer } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 // import { ReactComponent as CloseIcon } from '../Icons/close.svg';
+import ImageGallery from './ImageGallery/ImageGallery';
 import ImageGalleryItem from './ImageGallery/ImageGalleryItem/ImageGalleryItem';
 import Modal from './Modal/Modal';
 import Button from './Button/Button';
 import SeachBar from './Searchbar/Searchbar';
+import fetchImages from 'Services/FetchImages-api';
+import Loader from './Loader/Loader';
 // import ImageChanger from './ImageChanger/ImageChanger';
 
 class App extends Component {
@@ -12,24 +15,26 @@ class App extends Component {
     isImageLoaded: false,
     showModal: false,
     hits: [],
+    request: '',
   };
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.url !== this.props.url) {
-      this.setState({ isImageLoaded: false });
+  async componentDidMount(prevProps, prevState) {
+    const prevRequest = prevState.request;
+    console.log(prevRequest);
+    const nextRequest = this.state.request;
+    console.log(nextRequest);
+
+    if (prevRequest !== nextRequest) {
+      this.setState({ isImageLoaded: true });
+
+      fetchImages(nextRequest)
+        .then(res => {
+          return this.setState(({ hits }) => {
+            return { hits: [...hits, ...res.hits] };
+          });
+        })
+        .finally(() => this.setState({ isImageLoaded: false }));
     }
-  }
-
-  async componentDidMount() {
-    this.setState({ isImageLoaded: true });
-
-    fetch(
-      'https://pixabay.com/api/?q=cat&page=1&key=35004383-5cd2ee797d433f0b9be31b1f4&image_type=photo&orientation=horizontal&per_page=12'
-    )
-      .then(response => response.json())
-      // .then(console.log)
-      .then(hits => this.setState({ hits }))
-      .finally(() => this.setState({ isImageLoaded: false }));
   }
 
   toggleModal = () => {
@@ -38,10 +43,14 @@ class App extends Component {
     }));
   };
 
-  handleFormSubmit = hits => {
-    console.log(hits);
-    this.setState({ hits });
+  handleFormSubmit = request => {
+    if (request === this.state.request) {
+      return toast.info('You`ve alredy entered this request');
+    }
+    console.log(request);
+    this.setState({ request, hits: [] });
   };
+
   render() {
     const { isImageLoaded, showModal, hits } = this.state;
     const { url } = this.props;
@@ -76,21 +85,22 @@ class App extends Component {
         <div>
           <ToastContainer autoClose={3000} theme="colored" />
           <SeachBar onSubmit={this.handleFormSubmit} />
-          <ImageGalleryItem request={this.state.hits} />
-          {this.state.isImageLoaded && <h2>loading</h2>}
-          {this.state.hits && (
+          <ImageGallery hits={hits} onClick={this.toggleModal} />
+
+          {isImageLoaded && <Loader />}
+          {hits && (
             <div>
               <img src={hits['webformatURL']} alt="image" />
             </div>
           )}
           {showModal && (
             <Modal onClose={this.toggleModal}>
-              <Button onClick={this.toggleModal}></Button>
               <button type="button" onClick={this.toggleModal}>
                 Close modalWindow
               </button>
             </Modal>
           )}
+          <Button onClick={this.toggleModal}></Button>
         </div>
       </div>
     );

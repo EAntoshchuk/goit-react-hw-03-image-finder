@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Proptypes from 'prop-types';
 import { createPortal } from 'react-dom';
 import css from './Modal.module.css';
 
@@ -34,12 +35,14 @@ export default class Modal extends Component {
   render() {
     return createPortal(
       <div className={css.overlay} onClick={this.handleBackDrop}>
-        <div className={css.modal}>
-          {this.props.children}
-          <img src="" alt="" />
-        </div>
+        <div className={css.modal}>{this.props.children}</div>
       </div>,
       modalRoot
     );
   }
 }
+
+Modal.propTypes = {
+  onClose: Proptypes.func.isRequired,
+  children: Proptypes.element.isRequired,
+};

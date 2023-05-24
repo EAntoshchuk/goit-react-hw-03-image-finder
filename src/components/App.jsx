@@ -31,7 +31,7 @@ class App extends Component {
           console.log(res);
 
           if (res.total === 0) {
-            return toast.warn('There is no images with ${nextRequest}');
+            return toast.warn('There is no images with' + ' ' + nextRequest);
           }
           return this.setState(({ hits }) => {
             return { hits: [...hits, ...res.hits] };
@@ -50,14 +50,16 @@ class App extends Component {
 
   handleFormSubmit = request => {
     if (request === this.state.request) {
-      return toast.info('You`ve alredy entered this request');
+      return toast.info('You`re alredy looking at' + ' ' + request);
     }
     // console.log(request);
     this.setState({ request, hits: [], page: 1 });
   };
 
   handleLoadMore = () => {
-    this.setState(prevState => ({ page: prevState.page + 1 }));
+    this.setState(({ page }) => {
+      return { page: page + 1 };
+    });
   };
 
   render() {
@@ -66,14 +68,7 @@ class App extends Component {
     const showLoader = url && !isImageLoaded;
     const imageSize = isImageLoaded ? '100' : 0;
     return (
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr',
-          gridGap: '16px',
-          paddingBottom: '24px',
-        }}
-      >
+      <>
         <div
           style={{
             height: '10vh',
@@ -85,30 +80,38 @@ class App extends Component {
         >
           React-hw-03-Image-Finder
         </div>
-        <div>
-          <button type="button" onClick={this.toggleModal}>
-            Open modalWindow
-          </button>
-        </div>
-
-        <div>
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr',
+            gridGap: '16px',
+            paddingBottom: '24px',
+          }}
+        >
+          <div>
+            <button type="button" onClick={this.toggleModal}>
+              Open modalWindow
+            </button>
+          </div>
           <ToastContainer autoClose={3000} theme="colored" />
           <SeachBar onSubmit={this.handleFormSubmit} />
-          <ImageGallery hits={hits} alt={tags} onClick={this.toggleModal} />
+          <ImageGallery
+            hits={hits}
+            alt={hits.tags}
+            onClick={this.toggleModal}
+          />
           {isImageLoaded && <Loader />}
           {showModal && (
             <Modal onClose={this.toggleModal}>
-              <>
-                <img src={hits.largeImageURL} alt={hits.tags} />;
-                <button type="button" onClick={this.toggleModal}>
-                  {CloseIcon}
-                </button>
-              </>
+              <img src={hits.largeImageURL} alt={hits.tags} />;
+              <button type="button" onClick={this.toggleModal}>
+                {CloseIcon}
+              </button>
             </Modal>
           )}
-          {hits.lenght > 0 && <Button onClick={this.handleLoadMore}></Button>}
+          {hits.lenght > 0 && <Button onClick={this.handleLoadMore} />}
         </div>
-      </div>
+      </>
     );
   }
 }

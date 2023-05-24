@@ -16,7 +16,7 @@ export default class SeachBar extends Component {
     event.preventDefault();
 
     if (this.state.request.trim() === '') {
-      return toast.warn('Enter search request');
+      return toast.warn('Enter search request please');
     }
 
     this.props.onSubmit(this.state.request);

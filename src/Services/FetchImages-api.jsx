@@ -6,7 +6,7 @@ const per_page = '12';
 
 export default function fetchImages(request, page) {
   return fetch(
-    `${BASE_URL}?q=${request}&page=${page}&key${API_KEY}=&image_type=${image_type}&orientation=${orientation}&per_page=${per_page}`
+    `${BASE_URL}?q=${request}&page=${page}&key=${API_KEY}&image_type=${image_type}&orientation=${orientation}&per_page=${per_page}`
   ).then(res => {
     if (!res.ok) {
       throw new Error('Something went wrong  🤔 ');

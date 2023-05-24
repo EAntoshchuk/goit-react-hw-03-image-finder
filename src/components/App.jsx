@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
-import { ReactComponent as CloseIcon } from '../Icons/close.svg';
 import ImageGallery from './ImageGallery/ImageGallery';
 import Modal from './Modal/Modal';
 import Button from './Button/Button';
@@ -52,25 +51,21 @@ class App extends Component {
     if (request === this.state.request) {
       return toast.info('You`re alredy looking at' + ' ' + request);
     }
-    // console.log(request);
-    this.setState({ request, hits: [], page: 1 });
+    return this.setState({ request, hits: [], page: 1 });
   };
 
   handleLoadMore = () => {
-    this.setState(({ page }) => {
-      return { page: page + 1 };
-    });
+    this.setState(prevState => ({ page: prevState.page + 1 }));
   };
 
   render() {
     const { isImageLoaded, showModal, hits } = this.state;
-    const { url } = this.props;
-    const showLoader = url && !isImageLoaded;
-    const imageSize = isImageLoaded ? '100' : 0;
+
     return (
       <>
         <div
           style={{
+            display: 'flex',
             height: '10vh',
             justifyContent: 'center',
             alignItems: 'center',
@@ -88,11 +83,6 @@ class App extends Component {
             paddingBottom: '24px',
           }}
         >
-          <div>
-            <button type="button" onClick={this.toggleModal}>
-              Open modalWindow
-            </button>
-          </div>
           <ToastContainer autoClose={3000} theme="colored" />
           <SeachBar onSubmit={this.handleFormSubmit} />
           <ImageGallery
@@ -102,14 +92,13 @@ class App extends Component {
           />
           {isImageLoaded && <Loader />}
           {showModal && (
-            <Modal onClose={this.toggleModal}>
-              <img src={hits.largeImageURL} alt={hits.tags} />;
-              <button type="button" onClick={this.toggleModal}>
-                {CloseIcon}
-              </button>
-            </Modal>
+            <Modal
+              onClose={this.toggleModal}
+              src={hits.largeImageURL}
+              tags={hits.tags}
+            />
           )}
-          {hits.lenght > 0 && <Button onClick={this.handleLoadMore} />}
+          {hits.length > 0 && <Button onClick={this.handleLoadMore} />}
         </div>
       </>
     );

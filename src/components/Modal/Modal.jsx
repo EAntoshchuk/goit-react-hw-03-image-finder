@@ -1,20 +1,21 @@
 import React, { Component } from 'react';
 import Proptypes from 'prop-types';
 import { createPortal } from 'react-dom';
+import { ReactComponent as CloseIcon } from '../../Icons/close.svg';
 import css from './Modal.module.css';
 
 const modalRoot = document.querySelector('#modal_root');
 
 export default class Modal extends Component {
   componentDidMount() {
-    // console.log('modal componenDidMount');
-    window.addEventListener('keydown', this.handleKeyDown);
+    console.log('modal componenDidMount');
+    window.addEventListener('keydown', this.handleBackDrop);
   }
 
   componentWillUnmount() {
-    // console.log('modal componentWillUnmount');
+    console.log('modal componentWillUnmount');
 
-    window.removeEventListener('keydown', this.handleKeyDown);
+    window.removeEventListener('keydown', this.handleBackDrop);
   }
 
   // handleKeyDown = event => {
@@ -33,12 +34,12 @@ export default class Modal extends Component {
   };
 
   render() {
-    const { src, alt } = this.props;
+    const { src, tags } = this.props;
 
     return createPortal(
       <div className={css.overlay} onClick={this.handleBackDrop}>
         <div className={css.modal}>
-          <img src={src} alt={alt} />
+          <img className={css.modal_image} src={src} alt={tags} />
         </div>
       </div>,
       modalRoot
@@ -48,6 +49,6 @@ export default class Modal extends Component {
 
 Modal.propTypes = {
   src: Proptypes.string.isRequired,
-  alt: Proptypes.string.isRequired,
+  tags: Proptypes.string.isRequired,
   onClose: Proptypes.func.isRequired,
 };

@@ -1,14 +1,12 @@
 import React, { Component } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
-// import { ReactComponent as CloseIcon } from '../Icons/close.svg';
+import { ReactComponent as CloseIcon } from '../Icons/close.svg';
 import ImageGallery from './ImageGallery/ImageGallery';
-import ImageGalleryItem from './ImageGallery/ImageGalleryItem/ImageGalleryItem';
 import Modal from './Modal/Modal';
 import Button from './Button/Button';
 import SeachBar from './Searchbar/Searchbar';
 import fetchImages from 'Services/FetchImages-api';
 import Loader from './Loader/Loader';
-// import ImageChanger from './ImageChanger/ImageChanger';
 
 class App extends Component {
   state = {
@@ -16,23 +14,30 @@ class App extends Component {
     showModal: false,
     hits: [],
     request: '',
+    page: 1,
   };
 
-  async componentDidMount(prevProps, prevState) {
-    const prevRequest = prevState.request;
-    console.log(prevRequest);
-    const nextRequest = this.state.request;
+  componentDidUpdate(prevProps, prevState) {
+    const { request: PrevRequest } = prevState;
+    console.log(PrevRequest);
+    const { request: nextRequest } = this.state;
     console.log(nextRequest);
 
-    if (prevRequest !== nextRequest) {
+    if (PrevRequest !== nextRequest) {
       this.setState({ isImageLoaded: true });
 
       fetchImages(nextRequest)
         .then(res => {
+          console.log(res);
+
+          if (res.total === 0) {
+            return toast.warn('There is no images with ${nextRequest}');
+          }
           return this.setState(({ hits }) => {
             return { hits: [...hits, ...res.hits] };
           });
         })
+        .catch(err => toast.warn(err))
         .finally(() => this.setState({ isImageLoaded: false }));
     }
   }
@@ -47,8 +52,12 @@ class App extends Component {
     if (request === this.state.request) {
       return toast.info('You`ve alredy entered this request');
     }
-    console.log(request);
-    this.setState({ request, hits: [] });
+    // console.log(request);
+    this.setState({ request, hits: [], page: 1 });
+  };
+
+  handleLoadMore = () => {
+    this.setState(prevState => ({ page: prevState.page + 1 }));
   };
 
   render() {
@@ -85,22 +94,19 @@ class App extends Component {
         <div>
           <ToastContainer autoClose={3000} theme="colored" />
           <SeachBar onSubmit={this.handleFormSubmit} />
-          <ImageGallery hits={hits} onClick={this.toggleModal} />
-
+          <ImageGallery hits={hits} alt={tags} onClick={this.toggleModal} />
           {isImageLoaded && <Loader />}
-          {hits && (
-            <div>
-              <img src={hits['webformatURL']} alt="image" />
-            </div>
-          )}
           {showModal && (
             <Modal onClose={this.toggleModal}>
-              <button type="button" onClick={this.toggleModal}>
-                Close modalWindow
-              </button>
+              <>
+                <img src={hits.largeImageURL} alt={hits.tags} />;
+                <button type="button" onClick={this.toggleModal}>
+                  {CloseIcon}
+                </button>
+              </>
             </Modal>
           )}
-          <Button onClick={this.toggleModal}></Button>
+          {hits.lenght > 0 && <Button onClick={this.handleLoadMore}></Button>}
         </div>
       </div>
     );

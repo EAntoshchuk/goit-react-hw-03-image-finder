@@ -17,25 +17,29 @@ export default class Modal extends Component {
     window.removeEventListener('keydown', this.handleKeyDown);
   }
 
-  handleKeyDown = event => {
-    if (event.code === 'Escape') {
-      //   console.log('escape pushed');
-      this.props.onClose();
-    }
-  };
+  // handleKeyDown = event => {
+  //   if (event.code === 'Escape') {
+  //     //   console.log('escape pushed');
+  //     this.props.onClose();
+  //   }
+  // };
 
   handleBackDrop = event => {
     // console.log('currentTarget', event.currentTarget);
     // console.log('target', event.target);
-    if (event.currentTarget === event.target) {
+    if (event.currentTarget === event.target || event.code === 'Escape') {
       this.props.onClose();
     }
   };
 
   render() {
+    const { src, alt } = this.props;
+
     return createPortal(
       <div className={css.overlay} onClick={this.handleBackDrop}>
-        <div className={css.modal}>{this.props.children}</div>
+        <div className={css.modal}>
+          <img src={src} alt={alt} />
+        </div>
       </div>,
       modalRoot
     );
@@ -43,6 +47,7 @@ export default class Modal extends Component {
 }
 
 Modal.propTypes = {
+  src: Proptypes.string.isRequired,
+  alt: Proptypes.string.isRequired,
   onClose: Proptypes.func.isRequired,
-  children: Proptypes.element.isRequired,
 };

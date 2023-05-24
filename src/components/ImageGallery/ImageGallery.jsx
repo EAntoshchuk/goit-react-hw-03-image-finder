@@ -5,11 +5,12 @@ import css from './ImageGallery.module.css';
 export default function ImageGallery({ hits, onClick }) {
   return (
     <ul className={css.image_gallery}>
-      {hits.map(({ id, webformatURL, largeImageURL }) => (
+      {hits.map(({ id, webformatURL, largeImageURL, tags }) => (
         <ImageGalleryItem
           key={id}
           src={webformatURL}
           largeImageURL={largeImageURL}
+          alt={tags}
           onClick={onClick}
         />
       ))}
@@ -23,6 +24,7 @@ ImageGallery.propTypes = {
       id: PropTypes.number.isRequired,
       webformatURL: PropTypes.string.isRequired,
       largeImageURL: PropTypes.string.isRequired,
+      tags: PropTypes.string.isRequired,
     })
   ),
   onClick: PropTypes.func.isRequired,

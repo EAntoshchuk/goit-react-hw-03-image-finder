@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Children, Component } from 'react';
 import Proptypes from 'prop-types';
 import { createPortal } from 'react-dom';
 import { ReactComponent as CloseIcon } from '../../Icons/close.svg';
@@ -9,13 +9,13 @@ const modalRoot = document.querySelector('#modal_root');
 export default class Modal extends Component {
   componentDidMount() {
     console.log('modal componenDidMount');
-    window.addEventListener('keydown', this.handleBackDrop);
+    window.addEventListener('keydown', this.handleModal);
   }
 
   componentWillUnmount() {
     console.log('modal componentWillUnmount');
 
-    window.removeEventListener('keydown', this.handleBackDrop);
+    window.removeEventListener('keydown', this.handleModal);
   }
 
   // handleKeyDown = event => {
@@ -25,22 +25,18 @@ export default class Modal extends Component {
   //   }
   // };
 
-  handleBackDrop = event => {
+  handleModal = event => {
     // console.log('currentTarget', event.currentTarget);
     // console.log('target', event.target);
     if (event.currentTarget === event.target || event.code === 'Escape') {
-      this.props.onClose();
+      this.props.onClick();
     }
   };
 
   render() {
-    const { src, tags } = this.props;
-
     return createPortal(
-      <div className={css.overlay} onClick={this.handleBackDrop}>
-        <div className={css.modal}>
-          <img className={css.modal_image} src={src} alt={tags} />
-        </div>
+      <div className={css.overlay} onClick={this.handleModal}>
+        <div className={css.modal}>{this.props.children}</div>
       </div>,
       modalRoot
     );
@@ -48,7 +44,5 @@ export default class Modal extends Component {
 }
 
 Modal.propTypes = {
-  src: Proptypes.string.isRequired,
-  tags: Proptypes.string.isRequired,
-  onClose: Proptypes.func.isRequired,
+  onClick: Proptypes.func.isRequired,
 };

@@ -8,9 +8,9 @@ export default function ImageGallery({ hits, onClick }) {
       {hits.map(({ id, webformatURL, largeImageURL, tags }) => (
         <ImageGalleryItem
           key={id}
-          src={webformatURL}
+          webformatURL={webformatURL}
           largeImageURL={largeImageURL}
-          alt={tags}
+          tags={tags}
           onClick={onClick}
         />
       ))}

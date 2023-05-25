@@ -14,23 +14,21 @@ class App extends Component {
     hits: [],
     request: '',
     page: 1,
+    largeImage: null,
   };
 
   componentDidUpdate(prevProps, prevState) {
-    const { request: PrevRequest } = prevState;
-    console.log(PrevRequest);
-    const { request: nextRequest } = this.state;
-    console.log(nextRequest);
+    const { request, page } = this.state;
 
-    if (PrevRequest !== nextRequest) {
+    if (prevState.request !== request || prevState.page !== page) {
       this.setState({ isImageLoaded: true });
 
-      fetchImages(nextRequest)
+      fetchImages(request, page)
         .then(res => {
           console.log(res);
 
           if (res.total === 0) {
-            return toast.warn('There is no images with' + ' ' + nextRequest);
+            return toast.warn('There is no images with' + ' ' + request);
           }
           return this.setState(({ hits }) => {
             return { hits: [...hits, ...res.hits] };
@@ -41,10 +39,15 @@ class App extends Component {
     }
   }
 
-  toggleModal = () => {
-    this.setState(({ showModal }) => ({
-      showModal: !showModal,
-    }));
+  openModal = ({ largeImageURL, tags }) => {
+    this.setState({
+      showModal: true,
+      largeImage: { largeImageURL, tags },
+    });
+  };
+
+  closeModal = () => {
+    this.setState({ showModal: false, largeImage: null });
   };
 
   handleFormSubmit = request => {
@@ -59,8 +62,7 @@ class App extends Component {
   };
 
   render() {
-    const { isImageLoaded, showModal, hits } = this.state;
-
+    const { isImageLoaded, showModal, hits, largeImage } = this.state;
     return (
       <>
         <div
@@ -70,7 +72,7 @@ class App extends Component {
             justifyContent: 'center',
             alignItems: 'center',
             fontSize: 40,
-            color: '#010101',
+            color: '#3f51b5',
           }}
         >
           React-hw-03-Image-Finder
@@ -85,18 +87,12 @@ class App extends Component {
         >
           <ToastContainer autoClose={3000} theme="colored" />
           <SeachBar onSubmit={this.handleFormSubmit} />
-          <ImageGallery
-            hits={hits}
-            alt={hits.tags}
-            onClick={this.toggleModal}
-          />
+          <ImageGallery hits={hits} alt={hits.tags} onClick={this.openModal} />
           {isImageLoaded && <Loader />}
           {showModal && (
-            <Modal
-              onClose={this.toggleModal}
-              src={hits.largeImageURL}
-              tags={hits.tags}
-            />
+            <Modal onClick={this.closeModal}>
+              <img src={largeImage.largeImageURL} alt={largeImage.tags} />
+            </Modal>
           )}
           {hits.length > 0 && <Button onClick={this.handleLoadMore} />}
         </div>

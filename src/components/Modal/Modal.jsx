@@ -1,7 +1,6 @@
-import React, { Children, Component } from 'react';
+import { Component } from 'react';
 import Proptypes from 'prop-types';
 import { createPortal } from 'react-dom';
-import { ReactComponent as CloseIcon } from '../../Icons/close.svg';
 import css from './Modal.module.css';
 
 const modalRoot = document.querySelector('#modal_root');

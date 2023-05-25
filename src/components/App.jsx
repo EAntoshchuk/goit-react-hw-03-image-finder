@@ -28,7 +28,7 @@ class App extends Component {
           console.log(res);
 
           if (res.total === 0) {
-            return toast.warn('There is no images with' + ' ' + request);
+            return toast.warn(`There is no images with ${request}`);
           }
           return this.setState(({ hits }) => {
             return { hits: [...hits, ...res.hits] };
@@ -52,7 +52,7 @@ class App extends Component {
 
   handleFormSubmit = request => {
     if (request === this.state.request) {
-      return toast.info('You`re alredy looking at' + ' ' + request);
+      return toast.info(`You're alredy looking at ${request}`);
     }
     return this.setState({ request, hits: [], page: 1 });
   };
